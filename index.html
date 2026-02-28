@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌌 紫微命理馆</title>
+    <style>
+        :root { --primary: #7b68ee; --bg: #f4f7ff; --card: #ffffff; }
+        body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: var(--bg); margin: 0; padding: 40px 20px; min-height: 100vh; }
+        .container { max-width: 800px; margin: 0 auto; }
+        h1 { color: var(--primary); text-align: center; margin-bottom: 10px; }
+        .tagline { text-align: center; color: #666; margin-bottom: 40px; font-size: 1.1rem; }
+        .section-title { color: #444; font-size: 1.3rem; margin: 30px 0 20px; padding-bottom: 10px; border-bottom: 2px solid #eee; }
+        .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
+        .card-link { background: var(--card); padding: 25px; border-radius: 16px; text-decoration: none; color: #333; transition: all 0.3s; box-shadow: 0 4px 12px rgba(0,0,0,0.05); display: block; }
+        .card-link:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(123, 104, 238, 0.2); }
+        .icon { font-size: 2rem; margin-bottom: 10px; display: block; }
+        .card-title { font-size: 1.1rem; font-weight: bold; color: var(--primary); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌌 紫微命理馆</h1>
+        <p class="tagline">不问吉凶，只论全局 | 洞悉天机，指引人生方向</p>
+        
+        <div class="section-title">📜 东方传统命理</div>
+        <div class="card-grid">
+            <a href="tool.html?type=八字命理" class="card-link">
+                <span class="icon">☯️</span>
+                <span class="card-title">八字精算</span>
+            </a>
+            <a href="tool.html?type=紫微斗数" class="card-link">
+                <span class="icon">🌌</span>
+                <span class="card-title">紫微排盘</span>
+            </a>
+            <a href="tool.html?type=周易灵测" class="card-link">
+                <span class="icon">🔮</span>
+                <span class="card-title">周易灵测</span>
+            </a>
+        </div>
+        
+        <div class="section-title">✨ 西方神秘学</div>
+        <div class="card-grid">
+            <a href="tool.html?type=塔罗占卜" class="card-link">
+                <span class="icon">🃏</span>
+                <span class="card-title">塔罗牌阵</span>
+            </a>
+            <a href="tool.html?type=印占星盘" class="card-link">
+                <span class="icon">🕉️</span>
+                <span class="card-title">印占能量</span>
+            </a>
+        </div>
+    </div>
+</body>
+</html>
