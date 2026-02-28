@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>命理精测 - 紫微命理馆</title>
+    <style>
+        :root { --primary: #7b68ee; --bg: #f4f7ff; --card: #ffffff; }
+        body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: var(--bg); display: flex; justify-content: center; padding: 20px; min-height: 100vh; margin: 0; align-items: center; }
+        .card { background: var(--card); padding: 30px; border-radius: 28px; box-shadow: 0 15px 50px rgba(123, 104, 238, 0.15); width: 100%; max-width: 420px; text-align: center; }
+        h2 { color: var(--primary); font-size: 1.6rem; margin-bottom: 8px; }
+        .subtitle { color: #888; font-size: 0.9rem; margin-bottom: 25px; }
+        .form-group { text-align: left; margin-bottom: 15px; }
+        label { display: block; font-size: 0.85rem; color: #666; margin-bottom: 6px; font-weight: 600; }
+        input, select, textarea { width: 100%; padding: 13px; border: 1.5px solid #eee; border-radius: 12px; font-size: 15px; box-sizing: border-box; outline: none; transition: all 0.3s; font-family: inherit; }
+        input:focus, textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(123, 104, 238, 0.1); }
+        .btn { width: 100%; padding: 16px; background: var(--primary); color: white; border: none; border-radius: 16px; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.2s; margin-top: 10px; }
+        .btn:active { transform: scale(0.97); }
+        
+        /* 进度条样式 */
+        #loading { display: none; margin-top: 20px; }
+        .progress-outer { width: 100%; background: #eee; border-radius: 10px; height: 10px; margin: 20px 0; overflow: hidden; }
+        #progress-inner { width: 0%; height: 100%; background: linear-gradient(90deg, #7b68ee, #a29bfe); transition: width 0.4s ease; }
+        #loading-text { color: #555; font-size: 0.9rem; margin-bottom: 5px; }
+        
+        /* 结果展示区 */
+        #result-area { display: none; margin-top: 10px; }
+        .res-box { background: #fcfcff; padding: 25px; border-radius: 20px; text-align: left; line-height: 1.8; border: 1px solid #eee; border-left: 6px solid var(--primary); color: #333; font-size: 1rem; white-space: pre-wrap; word-wrap: break-word; }
+        .res-box b { color: var(--primary); }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2 id="pageTitle">🔮 命理测算</h2>
+    <p class="subtitle">拨开迷雾，于易理中寻一份确定性</p>
+    
+    <div id="input-form">
+        <div class="form-group" style="display: flex; gap: 10px;">
+            <div style="flex: 2;">
+                <label>您的称呼</label>
+                <input type="text" id="username" placeholder="例：BB姐">
+            </div>
+            <div style="flex: 1;">
+                <label>性别</label>
+                <select id="gender">
+                    <option value="女">坤造(女)</option>
+                    <option value="男">乾造(男)</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label>出生日期 (公历)</label>
+            <input type="datetime-local" id="birthdate">
+        </div>
+        <div class="form-group">
+            <label>所求之事</label>
+            <select id="topic">
+                <option value="事业财运">💰 事业财运</option>
+                <option value="情感婚姻">❤️ 情感婚姻</option>
+                <option value="学业升迁">📖 学业升迁</option>
+                <option value="身心状态">🍀 身心状态</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>现状简述 (让大师更懂你)</label>
+            <textarea id="user_context" rows="2" placeholder="例：面临职业转型期，有些焦虑..."></textarea>
+        </div>
+        <button id="mainBtn" class="btn">起卦问卜</button>
+    </div>
+
+    <div id="loading">
+        <p id="loading-text">正在感应星盘气场...</p>
+        <div class="progress-outer">
+            <div id="progress-inner"></div>
+        </div>
+        <p id="progress-num" style="color: var(--primary); font-weight: bold;">0%</p>
+    </div>
+
+    <div id="result-area">
+        <div id="res-content" class="res-box"></div>
+        <button class="btn" style="background:#444; margin-top:20px;" onclick="location.reload()">重新起卦</button>
+    </div>
+</div>
+
+<script>
+const urlParams = new URLSearchParams(window.location.search);
+const currentType = urlParams.get('type') || '八字命理';
+document.getElementById('pageTitle').innerText = '🔮 ' + currentType;
+
+document.getElementById("mainBtn").onclick = function() {
+    const u = document.getElementById("username").value;
+    const b = document.getElementById("birthdate").value;
+    const g = document.getElementById("gender").value;
+    const c = document.getElementById("user_context").value;
+    const t = document.getElementById("topic").value;
+
+    if (!u || !b) { alert("信息不全，大师难以起卦。"); return; }
+
+    document.getElementById("input-form").style.display = "none";
+    document.getElementById("loading").style.display = "block";
+
+    let progress = 0;
+    const interval = setInterval(() => {
+        progress += Math.floor(Math.random() * 15) + 5;
+        if (progress > 100) progress = 100;
+        document.getElementById("progress-inner").style.width = progress + "%";
+        document.getElementById("progress-num").innerText = progress + "%";
+        if (progress >= 100) {
+            clearInterval(interval);
+            setTimeout(() => {
+                document.getElementById("loading").style.display = "none";
+                document.getElementById("result-area").style.display = "block";
+                generateResult(u, g, b, t, c, currentType);
+            }, 500);
+        }
+    }, 300);
+};
+
+function generateResult(name, gender, birthdate, topic, context, type) {
+    const templates = {
+        '八字命理': `【八字命理精算】\n\n命主<b>${name}</b>，${gender}造。\n\n生辰八字排盘已完成，五行能量分布显示：\n${gender === '男' ? '· 日主偏旺，喜用神为金水' : '· 日主中和，喜用神为木火'}\n\n关于<b>${topic}</b>：\n当前大运显示，该领域有显著的机遇期。\n${context ? '结合您提到的"' + context + '"，大师认为：' : ''}\n\n建议：把握时机，行动力是关键。\n\n——紫微命理馆`,
+        '紫微斗数': `【紫微斗数排盘】\n\n命主<b>${name}</b>，${gender}命盘。\n\n命宫主星：${gender === '男' ? '紫微星' : '天同星'}\n财帛宫：武曲星坐守，财运稳健\n迁移宫：廉贞星，外运亨通\n\n关于<b>${topic}</b>：\n${gender === '男' ? '事业宫强势' : '夫妻宫和谐'}，未来一年有贵人相助。\n${context ? '针对"' + context + '"，建议：' : ''}\n保持耐心，星象显示转机将至。\n\n——紫微命理馆`,
+        '周易灵测': `【周易灵测】\n\n卦象：<b>${['乾卦', '坤卦', '震卦', '巽卦', '坎卦', '离卦', '艮卦', '兑卦'][Math.floor(Math.random()*8)]}</b>\n\n变爻解读：\n卦辞显示<b>${topic}</b>方面正处于蓄势待发阶段。\n\n针对<b>${name}</b>的疑问：\n${context ? '"' + context + '"' : '当前形势'}下，宜守不宜攻，待时而动。\n\n吉利方位：东南方\n吉利颜色：紫色\n\n——紫微命理馆`,
+        '塔罗占卜': `【塔罗牌阵解读】\n\n牌面：\n· 过去：<b>${['愚者', '魔术师', '女祭司', '皇后', '皇帝'][Math.floor(Math.random()*5)]}</b>\n· 现在：<b>${['恋人', '战车', '力量', '隐士', '命运之轮'][Math.floor(Math.random()*5)]}</b>\n· 未来：<b>${['正义', '倒吊人', '死神', '节制', '魔鬼'][Math.floor(Math.random()*5)]}</b>\n\n关于<b>${topic}</b>的指引：\n塔罗显示，您正站在选择的十字路口。\n${context ? '关于"' + context + '"：' : ''}\n相信直觉，过去的经验是未来的基石。\n\n——紫微命理馆`,
+        '印占星盘': `【印度占星解读】\n\n命主<b>${name}</b>，${gender}星盘。\n\n上升星座：<b>${['白羊座', '金牛座', '双子座', '巨蟹座', '狮子座', '处女座'][Math.floor(Math.random()*6)]}</b>\n月亮星座：情感驱动力强\n\n关于<b>${topic}</b>：\n当前行运显示，该领域有突破性进展。\n${context ? '针对"' + context + '"的建议：' : ''}\n冥想与内观将带来清晰指引。\n\n——紫微命理馆`
+    };
+    
+    document.getElementById("res-content").innerHTML = templates[type] || templates['八字命理'];
+}
+</script>
+
+</body>
+</html>
